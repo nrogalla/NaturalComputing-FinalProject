@@ -1,0 +1,6 @@
+numpy
+python-tsp
+matplotlib
+networkx
+pandas
+tsplib95
