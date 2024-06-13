@@ -1,5 +1,5 @@
 # NaturalComputing-FinalProject
-# TSP Solving with Physarum Algorithm
+# TSP Solving with Physarum Algorithm and BSO
 
 This repository contains implementations and experiments for solving the Traveling Salesman Problem (TSP) using the Physarum algorithm and the brain storm optimisation (BSO). The BSO is inspired by the human brain storming process, while the Physarum algorithm is inspired by the behavior of the slime mold Physarum polycephalum, which can find the shortest path through a maze. The repository includes multiple Python scripts, Jupyter notebooks, and result files related to the TSP solutions.
 
