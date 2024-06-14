@@ -13,15 +13,13 @@ import tracemalloc
 import time
 import itertools
 
-MAX_DISTANCE = float('inf')
-
 def get_pos(file_path, show_graph=False):
     """
-    Get the position dictionary of the cities in the given TSP file.
+    Get the position dictionary of the cities in the given Traveling Salesperson Problem (TSP) file.
 
     Parameters:
         file_path (str): The path to the TSP file.
-        show_graph (bool, optional): Whether to show the graph representation of the TSP problem. Defaults to False.
+        show_graph (bool, optional): Whether to show the graph representation of the TSP
 
     Returns:
         dict: A dictionary mapping the index of each city to its (x, y) coordinates.
@@ -49,7 +47,7 @@ def get_pos(file_path, show_graph=False):
 
 def generate_random_individual(num_cities):
     """
-    Generates a random individual for a Traveling Salesman Problem (TSP) by shuffling the indices of the cities.
+    Generates a random individual for a TSP by shuffling the indices of the cities.
 
     Parameters:
         num_cities (int): The number of cities in the TSP.
@@ -63,7 +61,7 @@ def generate_random_individual(num_cities):
 
 def calculate_fitness(individual, distances):
     """
-    Calculate the total distance of a given individual in the Traveling Salesman Problem (TSP).
+    Calculate the total distance of a given individual in the TSP.
 
     Parameters:
         individual (numpy.ndarray): An array representing the individual in the TSP.
@@ -80,7 +78,7 @@ def calculate_fitness(individual, distances):
 
 def calculate_fitness_with_penalty(individual, distances):
     """
-    Calculate the fitness of an individual in the Traveling Salesman Problem (TSP) with a penalty for not visiting all cities.
+    Calculate the fitness of an individual in the TSP with a penalty for not visiting all cities.
 
     Parameters:
         individual (numpy.ndarray): The individual representing a tour in the TSP.
@@ -89,7 +87,7 @@ def calculate_fitness_with_penalty(individual, distances):
     Returns:
         float: The fitness value of the individual, including a penalty for not visiting all cities.
             If all cities are visited, the fitness value is the total distance of the tour.
-            Otherwise, the fitness value is set to a maximum distance value (MAX_DISTANCE).
+            Otherwise, the fitness value is set to a maximum distance value (np.inf).
 
     """
     total_distance = 0
@@ -102,7 +100,7 @@ def calculate_fitness_with_penalty(individual, distances):
 
     # Penalty for not visiting all cities
     if len(distances) != len(visited_cities):
-      return MAX_DISTANCE
+      return np.inf
 
     return total_distance
 
@@ -174,7 +172,6 @@ def new_individual_generation(individuals_by_cluster, kmeans_centers, p_gen, p_o
       r_one_cluster = random.random()
       # Cluster center
       if r_one_cluster < p_one_cluster:
-
           X_select = kmeans_centers[i]
       # normal individual
       else:
@@ -182,28 +179,28 @@ def new_individual_generation(individuals_by_cluster, kmeans_centers, p_gen, p_o
 
           X_select = individuals_by_cluster[i][j]
 
-      X_select = (invert_part(X_select[0]), X_select[1])
+      X_select = (chromosome_inversion(X_select[0]), X_select[1])
       X_select_2 = None
 
     # Two Cluster Case
     else:
         r_two_cluster = random.random()
+        
         # Randomly select two clusters
         i = np.random.choice(len(kmeans_centers))
         while True:
             j = np.random.choice(len(kmeans_centers))
             if i != j:
               break
-        # cluster center crossover
+        
+        # Cluster center crossover
         if r_two_cluster < p_two_cluster:
-
-          # child_1, child_2 = order_crossover(kmeans_centers[i][0], kmeans_centers[j][0])
           child_1 = heuristic_crossover(kmeans_centers[i][0], kmeans_centers[j][0], distances)
           child_2 = heuristic_crossover(kmeans_centers[i][0], kmeans_centers[j][0], distances)
           X_select = (child_1, kmeans_centers[i][1])
           X_select_2 = (child_2, kmeans_centers[j][1])
-
-        # normal individual crossover
+        
+        # Normal individual crossover
         else:
           ind1 = np.random.choice(len(individuals_by_cluster[i]))
           ind2 = np.random.choice(len(individuals_by_cluster[j]))
@@ -216,7 +213,7 @@ def new_individual_generation(individuals_by_cluster, kmeans_centers, p_gen, p_o
 
 def tsp_bso(file_path, n_clusters, num_individuals, max_iter, p_clustering, p_gen, p_one_cluster, p_two_cluster, optimal_fitness, get_iteration_fitness = False):
     """
-    Perform a binary search optimization (BSO) algorithm for the Traveling Salesman Problem (TSP) using the given parameters.
+    Perform a brain strom optimization (BSO) algorithm for the TSP using the given parameters.
 
     Args:
         file_path (str): The path to the TSP file.
@@ -256,12 +253,11 @@ def tsp_bso(file_path, n_clusters, num_individuals, max_iter, p_clustering, p_ge
 
     while gen <= max_iter and best_fitness > optimal_fitness: # and iter_without_improvement < max_iter_without_improvement:
 
-        # cluster
+        # Cluster
         individuals_by_cluster, kmeans_centers = kmeans_clustering_with_highest_fitness(individuals, n_clusters, distances, p_clustering)
 
-        # new individual generation
+        # New individual generation
         X_selections = new_individual_generation(individuals_by_cluster, kmeans_centers, p_gen, p_one_cluster, p_two_cluster, distances)
-        # print(X_selections)
 
         # Selection
         for X_select in X_selections:
@@ -274,7 +270,6 @@ def tsp_bso(file_path, n_clusters, num_individuals, max_iter, p_clustering, p_ge
             # Evaluation
             individual_fitness = calculate_fitness_with_penalty(individuals[X_select[1]], distances)
             if individual_fitness < best_fitness:
-                #print(individual_fitness)
                 best_fitness = individual_fitness
                 best_individual = individuals[X_select[1]]
 
@@ -285,7 +280,7 @@ def tsp_bso(file_path, n_clusters, num_individuals, max_iter, p_clustering, p_ge
       return distances, best_individual, best_fitness_per_iteration, gen
     return distances, best_individual, best_fitness, gen
 
-def invert_part(individual):
+def chromosome_inversion(individual):
     """
     Invert a part of an individual by randomly selecting two distinct positions and swapping the values between them.
 
@@ -414,7 +409,6 @@ def get_graph_from_path(tsp_solution):
 
     Returns:
         nx.Graph: A graph object representing the TSP solution path.
-
     """
     # Create a graph for the TSP solution path
     G = nx.Graph()
@@ -427,15 +421,12 @@ def get_graph_from_path(tsp_solution):
 
 def plot_tsp_graph_with_solution(filepath, solution, best_fitness):
     """
-    Plot the Traveling Salesman Problem (TSP) graph with the given solution path.
+    Plot the TSP graph with the given solution path.
 
     Parameters:
         filepath (str): The path to the TSP file.
         solution (list): A list of cities in the order they should be visited.
         best_fitness (float): The fitness value representing the total distance of the solution path.
-
-    Returns:
-        None
     """
     pos = get_pos(filepath)
 
@@ -454,7 +445,7 @@ def plot_tsp_graph_with_solution(filepath, solution, best_fitness):
 
 def run_parameter_optimization(file_path, optimal_fitness = 0):
     """
-    Run a parameter optimization for the Traveling Salesman Problem (TSP) using the given file path.
+    Run a parameter optimization for the TSP using the given file path.
 
     Args:
         file_path (str): The path to the TSP file.
@@ -513,7 +504,7 @@ def run_parameter_optimization(file_path, optimal_fitness = 0):
 
 def run_tsp_with_stats(file_path, optimum, p_gen, p_one_cluster, p_two_cluster, p_clustering):
     """
-    Run Traveling Salesman Problem (TSP) with statistics.
+    Run TSP gathering statistics.
 
     Args:
         file_path (str): The path to the TSP file.
@@ -547,7 +538,7 @@ def run_tsp_with_stats(file_path, optimum, p_gen, p_one_cluster, p_two_cluster, 
 
 def run_comparison_stats(file_path,  p_gen, p_one_cluster, p_two_cluster, p_clustering, optimum = 0,num_runs = 50):
     """
-    Run comparison statistics for the Traveling Salesman Problem (TSP) using the BSO algorithm.
+    Run comparison statistics for the TSP using the BSO algorithm.
 
     Args:
         file_path (str): The path to the TSP file.
@@ -600,5 +591,4 @@ def run_comparison_stats(file_path,  p_gen, p_one_cluster, p_two_cluster, p_clus
 
     df = pd.DataFrame(data)
 
-    # Print the DataFrame
     return df
