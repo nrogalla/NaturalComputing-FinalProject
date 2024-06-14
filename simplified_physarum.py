@@ -1,4 +1,12 @@
-
+import numpy as np
+import gzip
+import shutil
+import matplotlib.pyplot as plt
+import time
+import pandas as pd
+import networkx as nx
+import tsplib95
+import tracemalloc
 
 def extract_gzip(source_filepath, destination_filepath):
     """
