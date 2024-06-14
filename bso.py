@@ -484,9 +484,6 @@ def run_parameter_optimization(file_path, optimal_fitness = 0):
     i = 0
     for p_gen, p_one_cluster, p_two_cluster, p_clustering in itertools.product(p_gen_values, p_one_cluster_values, p_two_cluster_values, p_clustering_values):
         fitness_values = []
-        i += 1
-        print(f'Test: ', i)
-        print(p_gen, p_one_cluster, p_two_cluster, p_clustering)
         for _ in range(10):
             graph, _, fitness, _ = tsp_bso(file_path, n_clusters, num_individuals, n_iter, p_clustering, p_gen, p_one_cluster, p_two_cluster, optimal_fitness, False)
             fitness_values.append(fitness)
