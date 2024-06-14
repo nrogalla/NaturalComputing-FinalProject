@@ -1,12 +1,4 @@
-import numpy as np
-import gzip
-import shutil
-import matplotlib.pyplot as plt
-import time
-import pandas as pd
-import networkx as nx
-import tsplib95
-import tracemalloc
+
 
 def extract_gzip(source_filepath, destination_filepath):
     """
@@ -129,11 +121,11 @@ def construct_tsp_path(conductivities, fluxes):
     Construct a TSP (Traveling Salesman Problem) path using the given conductivities and fluxes.
 
     Parameters:
-    - conductivities (ndarray): A 2D array representing the conductivities between each pair of cities.
-    - fluxes (ndarray): A 2D array representing the fluxes between each pair of cities.
+        conductivities (ndarray): A 2D array representing the conductivities between each pair of cities.
+        fluxes (ndarray): A 2D array representing the fluxes between each pair of cities.
 
     Returns:
-    - list: A list representing the TSP path. If no path can be constructed, returns None.
+        list: A list representing the TSP path. If no path can be constructed, returns None.
     """
     num_cities = len(conductivities)
     visited = np.zeros(num_cities, dtype=bool)
@@ -282,7 +274,7 @@ def run_simulation(dataset_name, decay_rate, k, m, epsilon):
     for _ in range(num_iterations):
 
         fluxes = calculate_fluxes(pressures, conductivities, distances, epsilon)
-        pressures = update_pressures(pressures, fluxes)
+        pressures = update_pressures(pressures, fluxes)§
         conductivities = update_conductivities(conductivities, fluxes, decay_rate, k, m)
 
         conductivities = prune_connections(conductivities)
